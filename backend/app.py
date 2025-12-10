@@ -19,7 +19,8 @@ from langchain_google_vertexai.model_garden import ChatAnthropicVertex
 model_config = {
 	"project": "ksm-rch-sciscigpt",
 	"location": "us-east5",
-	"temperature": 0.0
+	"temperature": 0.0,
+	"streaming": True
 }
 
 llm_dict = {
@@ -38,7 +39,6 @@ from agents.sciscigpt import AgentState, all_tools, all_specialists, define_scis
 for tool in all_tools:
     add_routes(app, tool, path=f"/tools/{tool.name}")
 
-# from langchain.globals import set_debug
 sciscigpt_graph = define_sciscigpt_graph(llm_dict)
 sciscigpt = sciscigpt_graph.compile(debug=False)
 

@@ -18,7 +18,7 @@ from langchain_core.load import dumps
 from agents.utils.messages import return_messages
 
 
-async def call_research_manager(llm_dict, tools, pruning_func, state: AgentState):
+def call_research_manager(llm_dict, tools, pruning_func, state: AgentState):
 	profile = {"current": "research_manager", "name": "call_research_manager"}
 	try:
 		llm = llm_dict[state["metadata"]["model_name"]]
@@ -52,7 +52,7 @@ async def call_research_manager(llm_dict, tools, pruning_func, state: AgentState
 
 
 from functools import reduce
-async def call_specialist(llm_dict, tools, pruning_func, state: AgentState):
+def call_specialist(llm_dict, tools, pruning_func, state: AgentState):
 	task = _extract_task_from_message(state["messages"])
 	specialist, task, memory = task["specialist"], task["task"], task["memory"]
 	profile = {"current": specialist, "name": "call_specialist"}
@@ -107,7 +107,7 @@ async def call_specialist(llm_dict, tools, pruning_func, state: AgentState):
 
 
 from func.image import if_message_contains_image
-async def call_toolset(tools, state: AgentState):
+def call_toolset(tools, state: AgentState):
 	try:
 		tools_by_name = {tool.name: tool for tool in tools}
 		tool_call = state["messages"][-1].tool_calls[0]
@@ -138,7 +138,7 @@ async def call_toolset(tools, state: AgentState):
 	return return_messages([tool_message], next=next, **profile)
 
 
-async def call_specialistset(specialists, state: AgentState):
+def call_specialistset(specialists, state: AgentState):
 	profile = {"current": "specialistset", "name": "call_specialistset"}
 
 	try:
