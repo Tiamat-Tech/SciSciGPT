@@ -1,5 +1,16 @@
 # Release Notes
 
+## Next.js 15.0.5 Compatibility
+
+Keeping the frontend in sync with the latest Next.js changes.
+
+### Highlights
+
+- Upgrade Next.js to 15.0.5 and refresh the lockfile for the stable release
+- Update dynamic route props to await the new async `params` shape from Next.js
+- Adjust header access helper to the awaited `headers()` API
+- Refresh TypeScript env reference to the current documentation
+
 ## Cross-Platform Compatibility & Enhanced Installation
 
 We are pleased to announce significant improvements to SciSciGPT's deployment pipeline, focusing on cross-platform compatibility and streamlined installation procedures.

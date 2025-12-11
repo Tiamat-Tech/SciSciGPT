@@ -1,15 +1,15 @@
-import { headers } from 'next/headers'
+import { headers as getHeaders } from 'next/headers'
 
 export async function getClientInfo(): Promise<Record<string, string>> {
-  const headersList = headers()
-  
+  const headersList = await getHeaders()
+
   const clientInfo: Record<string, string> = {
     timestamp: new Date().toISOString()
   }
 
   const networkHeaders = [
     'x-forwarded-for',
-    'x-real-ip', 
+    'x-real-ip',
     'cf-connecting-ip',
     'x-client-ip',
     'x-forwarded',
@@ -27,7 +27,7 @@ export async function getClientInfo(): Promise<Record<string, string>> {
 
   const geoHeaders = [
     'cf-ipcountry',
-    'cf-region', 
+    'cf-region',
     'cf-ipcity',
     'cf-timezone',
     'x-country-code',

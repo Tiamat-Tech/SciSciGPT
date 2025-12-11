@@ -55,7 +55,7 @@ export default async function IndexPage() {
       <>
         <RedirectScript />
         <AI initialAIState={{ chatId: id, messages: [] }}>
-          <Chat key={id} id={id} session={session} missingKeys={missingKeys} />
+          <Chat id={id} session={session} missingKeys={missingKeys} />
         </AI>
       </>
     )
