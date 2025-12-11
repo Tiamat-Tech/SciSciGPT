@@ -66,22 +66,11 @@ These improvements significantly lower the barrier for researchers to deploy, cu
 
 ## Streaming Responses & Agent Sync
 
-This release improves interaction responsiveness and simplifies agent orchestration while tightening configuration defaults.
+Faster responses and simpler orchestration with tightened defaults.
 
-### Backend Streaming Enablement
+### Highlights
 
-Vertex-hosted Anthropic models now run with streaming responses enabled by default, delivering incremental output for a more responsive research experience.
-
-### Synchronous Agent Nodes
-
-Agent node handlers (`call_research_manager`, `call_specialist`, `call_toolset`, `call_specialistset`) have been converted to synchronous functions to align with the execution graph and reduce event-loop overhead.
-
-### Configuration Template Refinements
-
-- Added Anthropic API key placeholder alongside OpenAI
-- Normalized Pinecone index/namespace and name-search defaults for consistency
-- Kept Google application credentials path explicit for cloud integrations
-
-### Frontend Setup Adjustments
-
-Frontend bootstrap now installs `nodejs` and `pnpm` only, with optional helpers (tmux, pyngrok) documented as commented installs to keep the default setup lean.
+- Streaming enabled by default for Vertex-hosted Anthropic models
+- Agent node handlers moved to sync for consistent graph execution
+- Env template adds Anthropic key placeholder and normalized Pinecone defaults
+- Frontend setup streamlined to nodejs + pnpm; optional extras left commented
