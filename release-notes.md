@@ -1,6 +1,9 @@
 # Release Notes
 
-## Bring-Your-Own-Key access controls
+## 1.1.1 – Prompt pinning for reproducibility
+- Pinned Research Manager and specialist prompt snapshots to fixed hashes to guarantee consistent behavior across deployments and the 1.1.x release line.
+
+## 1.1.0 – Bring-Your-Own-Key access controls
 - Added settings experience to save or remove an Anthropic API key with secure KV storage and masking.
 - Added daily free-question quota enforcement with `/api/quota` so signed-in users without a key are rate limited.
 - Introduced chat-level prompts to add a key (and a settings page) so users can lift limits themselves.
