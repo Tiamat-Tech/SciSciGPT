@@ -1,6 +1,7 @@
 'use client'
 
 import { useFormState, useFormStatus } from 'react-dom'
+import { useActionState } from 'react'
 import { authenticate } from '@/app/login/actions'
 import Link from 'next/link'
 import { useEffect } from 'react'
@@ -11,7 +12,7 @@ import { useRouter } from 'next/navigation'
 
 export default function LoginForm() {
   const router = useRouter()
-  const [result, dispatch] = useFormState(authenticate, undefined)
+  const [result, dispatch] = useActionState(authenticate, undefined)
 
   useEffect(() => {
     if (result) {
@@ -19,6 +20,7 @@ export default function LoginForm() {
         toast.error(getMessageFromCode(result.resultCode))
       } else {
         toast.success(getMessageFromCode(result.resultCode))
+        router.replace('/')
         router.refresh()
       }
     }

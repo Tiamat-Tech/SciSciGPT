@@ -1,5 +1,9 @@
-import { type Session } from '@/lib/types'
+'use client'
 
+import { type Session } from '@/lib/types'
+import { useTransition } from 'react'
+import { useRouter } from 'next/navigation'
+import { signOut } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -8,7 +12,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { signOut } from '@/auth'
 
 export interface UserMenuProps {
   user: Session['user']
@@ -20,6 +23,17 @@ function getUserInitials(name: string) {
 }
 
 export function UserMenu({ user }: UserMenuProps) {
+  const router = useRouter()
+  const [isSigningOut, startSignOut] = useTransition()
+
+  const handleSignOut = () => {
+    startSignOut(async () => {
+      await signOut({ redirect: false })
+      router.replace('/')
+      router.refresh()
+    })
+  }
+
   return (
     <div className="flex items-center justify-between">
       <DropdownMenu>
@@ -36,16 +50,24 @@ export function UserMenu({ user }: UserMenuProps) {
             <div className="text-xs text-zinc-500">{user.email}</div>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <form
-            action={async () => {
-              'use server'
-              await signOut()
-            }}
-          >
-            <button className=" relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-xs outline-none transition-colors hover:bg-red-500 hover:text-white focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
-              Sign Out
+          <DropdownMenuItem asChild>
+            <a
+              href="/settings"
+              className="w-full px-2 py-1.5 text-xs rounded-sm transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground text-left"
+            >
+              Settings
+            </a>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem asChild>
+            <button
+              className="w-full px-2 py-1.5 text-xs rounded-sm transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground cursor-pointer select-none text-left data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+              onClick={handleSignOut}
+              disabled={isSigningOut}
+            >
+              {isSigningOut ? 'Signing out...' : 'Sign Out'}
             </button>
-          </form>
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

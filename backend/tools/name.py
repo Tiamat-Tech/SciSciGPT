@@ -6,8 +6,6 @@ import pandas as pd
 import json
 
 import os
-from dotenv import load_dotenv
-load_dotenv()
 
 class SearchNameInput(BaseModel):
 	column: str = Field(..., description="Specifies the database column to search within. Current valid options only include `field_name` and `institution_name`.")

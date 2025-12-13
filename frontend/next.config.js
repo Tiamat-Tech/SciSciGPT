@@ -16,7 +16,12 @@ module.exports = {
 
   experimental: {
     serverActions: {
-      allowedOrigins: ['https://sciscigpt.com', 'https://sciscigpt.ngrok.app', 'http://localhost:3000']
+      allowedOrigins: [
+        'https://sciscigpt.com', 
+        'https://sciscigpt.ngrok.app', 
+        'http://localhost:3000', 
+        'http://localhost:3001'
+      ]
     }
   }
 }

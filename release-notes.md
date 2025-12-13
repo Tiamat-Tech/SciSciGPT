@@ -1,87 +1,15 @@
 # Release Notes
 
-## Next.js 15.0.5 Compatibility
+## Bring-Your-Own-Key access controls
+- Added settings experience to save or remove an Anthropic API key with secure KV storage and masking.
+- Added daily free-question quota enforcement with `/api/quota` so signed-in users without a key are rate limited.
+- Introduced chat-level prompts to add a key (and a settings page) so users can lift limits themselves.
 
-Keeping the frontend in sync with the latest Next.js changes.
+## Backend LLM loader & dependency stability
+- New `backend/llms.py` loader lets each request use a provided Anthropic key or fall back to Vertex AI defaults.
+- Agents and tools now pull models through the loader (instead of a global map) and use updated `.text` accessors.
+- Pinned LangChain/Anthropic dependency versions to known-compatible releases for reproducible deployments.
 
-### Highlights
-
-- Upgrade Next.js to 15.0.5 and refresh the lockfile for the stable release
-- Update dynamic route props to await the new async `params` shape from Next.js
-- Adjust header access helper to the awaited `headers()` API
-- Refresh TypeScript env reference to the current documentation
-
-## Cross-Platform Compatibility & Enhanced Installation
-
-We are pleased to announce significant improvements to SciSciGPT's deployment pipeline, focusing on cross-platform compatibility and streamlined installation procedures.
-
-### Cross-Platform Validation
-
-SciSciGPT has been thoroughly tested and validated across multiple operating systems:
-
-- **Ubuntu 24.04 LTS**
-- **CentOS Stream 10**
-- **macOS Sequoia 15.5**
-- **Windows 11**
-
-All core functionalities—including multi-agent orchestration, database integration, multi-language analytics (Python/R/Julia), and the web interface—operate consistently across these platforms using our unified Anaconda-based dependency management.
-
-### Streamlined Installation Process
-
-The installation workflow has been simplified into intuitive command-line operations:
-
-**Backend Setup:**
-```bash
-cd backend
-conda create -n sciscigpt python=3.11 -y
-conda activate sciscigpt
-pip install -r requirements.txt
-bash setup-sandbox.sh  # Optional: comprehensive package installation
-bash start.sh
-```
-
-**Frontend Setup:**
-```bash
-cd frontend
-bash setup.sh
-bash start.sh
-```
-
-### Enhanced Documentation
-
-The README has been substantially expanded with:
-
-- **Step-by-step cloud infrastructure setup** for Google Cloud Platform (BigQuery, Cloud Storage, Vertex AI), Pinecone vector database, and Upstash Redis
-- **Automated database construction** via ready-to-execute Jupyter notebooks that download datasets from HuggingFace and deploy to cloud services
-- **Comprehensive troubleshooting section** addressing common deployment challenges including:
-  - Package version constraints for BigQuery and Pinecone clients
-  - Google Cloud service account permissions and IAM roles
-  - GCS bucket public-access configuration
-  - Frontend-backend synchronization issues
-- **Complete environment variable templates** with clear documentation for all required credentials and endpoints
-
-### Technical Improvements
-
-- **Unified Conda environment** (`sciscigpt`) harmonizes dependencies across operating systems
-- **Multi-language support** with properly configured rpy2 and juliacall bridges for seamless Python/R/Julia interoperability
-- **Modular installation options** distinguishing minimal setup (core functionality) from comprehensive sandbox (extended scientific packages)
-
-### Documentation Fixes
-
-- Corrected License badge (AGPL-3.0)
-- Fixed file references to match actual project structure
-- Added missing environment variables to configuration templates
-- Updated protocol specifications for local development environments
-
-These improvements significantly lower the barrier for researchers to deploy, customize, and extend SciSciGPT for their own Science of Science investigations across diverse computing environments.
-
-## Streaming Responses & Agent Sync
-
-Faster responses and simpler orchestration with tightened defaults.
-
-### Highlights
-
-- Streaming enabled by default for Vertex-hosted Anthropic models
-- Agent node handlers moved to sync for consistent graph execution
-- Env template adds Anthropic key placeholder and normalized Pinecone defaults
-- Frontend setup streamlined to nodejs + pnpm; optional extras left commented
+## Cleanup and security
+- Removed demo stock components/assets and refreshed favicons/header branding.
+- Ensured only example credentials remain in-repo; removed stray .env/service-account files from the tree.

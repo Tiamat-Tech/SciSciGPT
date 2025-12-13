@@ -194,8 +194,6 @@ export async function saveChat(chat: Chat) {
       member: `active:chat:${chat.id}`
     })
     await pipeline.exec()
-    
-    revalidatePath('/')
   } else {
     return
   }

@@ -6,6 +6,7 @@ import { getChat, getMissingKeys } from '@/app/actions'
 import { Chat } from '@/components/chat'
 import { AI } from '@/lib/chat/actions'
 import { Session } from '@/lib/types'
+import { getSettingsSnapshotForUser } from '@/app/settings/actions'
 
 export interface ChatPageProps {
   params: Promise<{
@@ -39,6 +40,10 @@ export default async function ChatPage({ params }: ChatPageProps) {
   }
 
   const userId = session.user.id as string
+  const accessInfo = await getSettingsSnapshotForUser(
+    session.user.id,
+    session.user.email
+  )
   const chat = await getChat(id, userId)
 
   if (!chat) {
@@ -56,6 +61,7 @@ export default async function ChatPage({ params }: ChatPageProps) {
         session={session}
         initialMessages={chat.messages}
         missingKeys={missingKeys}
+        accessInfo={accessInfo}
       />
     </AI>
   )

@@ -24,26 +24,36 @@ export function ModelSelector({
   selectedModelId?: string;
   onModelChange?: (modelId: string) => void;
 } & React.ComponentProps<typeof Button>) {
-  const [open, setOpen] = useState(false);
-  const [currentModelId, setCurrentModelId] = useState(selectedModelId ?? 'claude-3.5');
+  const DEFAULT_MODEL_ID = 'claude-4.0';
 
-  const availableChatModels = useMemo(() => [
-    {
-      id: 'claude-3.5',
-      name: 'Claude 3.5',
-      description: 'Fast and capable model for most tasks',
-    },
-    {
-      id: 'claude-3.7',
-      name: 'Claude 3.7',
-      description: 'Enhanced model with improved reasoning',
-    },
-    {
-      id: 'claude-4.0',
-      name: 'Claude 4.0',
-      description: 'Most advanced model with superior capabilities',
-    },
-  ], []);
+  const availableChatModels = useMemo(
+    () => [
+      {
+        id: 'claude-3.7',
+        name: 'Claude 3.7',
+        description: 'Enhanced model with improved reasoning',
+      },
+      {
+        id: 'claude-4.0',
+        name: 'Claude 4.0',
+        description: 'Most advanced model with superior capabilities',
+      },
+    ],
+    [],
+  );
+
+  const availableModelIds = useMemo(
+    () => availableChatModels.map((model) => model.id),
+    [availableChatModels],
+  );
+
+  const [open, setOpen] = useState(false);
+  const [currentModelId, setCurrentModelId] = useState(() => {
+    const initialModelId = selectedModelId ?? DEFAULT_MODEL_ID;
+    return availableModelIds.includes(initialModelId)
+      ? initialModelId
+      : DEFAULT_MODEL_ID;
+  });
 
   const selectedChatModel = useMemo(
     () =>

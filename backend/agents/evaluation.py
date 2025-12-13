@@ -10,8 +10,8 @@ from agents.utils.images import _multimodal_message
 from agents.utils.messages import return_messages
 
 
-async def call_evaluation(llm_dict, specialists, pruning_func, state: AgentState):
-	llm = llm_dict[state["metadata"]["model_name"]]
+async def call_evaluation(load_llm, specialists, pruning_func, state: AgentState):
+	llm = load_llm(state["metadata"], disable_streaming=False)
 	specialists_by_name = {specialist.name: specialist for specialist in specialists}
 
 	task = _extract_task_from_message(state["messages"])
@@ -57,7 +57,7 @@ async def tool_evaluation(model, input_messages):
 	response.tags = tags
 	
 	response.tool_calls = []
-	response.content = _extract_xml_tags_from_text(response.text(), ["reflection", "reward"])
+	response.content = _extract_xml_tags_from_text(response.text, ["reflection", "reward"])
 	return response
 
 async def visual_evaluation(model, input_messages):
@@ -68,7 +68,7 @@ async def visual_evaluation(model, input_messages):
 	response.tags = tags
 
 	response.tool_calls = []
-	response.content = _extract_xml_tags_from_text(response.text(), ["caption", "reflection", "reward"])
+	response.content = _extract_xml_tags_from_text(response.text, ["caption", "reflection", "reward"])
 	return response
 
 
@@ -81,5 +81,5 @@ async def task_evaluation(model, input_messages):
 	response.tags = tags
 
 	response.tool_calls = []
-	response.content = _extract_xml_tags_from_text(response.text(), ["reflection", "reward", "thinking"])
+	response.content = _extract_xml_tags_from_text(response.text, ["reflection", "reward", "thinking"])
 	return response

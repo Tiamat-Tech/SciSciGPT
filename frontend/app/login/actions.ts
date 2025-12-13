@@ -8,8 +8,13 @@ import { kv } from '@vercel/kv'
 import { ResultCode } from '@/lib/utils'
 
 export async function getUser(email: string) {
-  const user = await kv.hgetall<User>(`user:${email}`)
-  return user
+  try {
+    const user = await kv.hgetall<User>(`user:${email}`)
+    return user
+  } catch (error) {
+    console.error('[kv] Failed to read user', { email, error })
+    return null
+  }
 }
 
 interface Result {
@@ -21,10 +26,10 @@ export async function authenticate(
   _prevState: Result | undefined,
   formData: FormData
 ): Promise<Result | undefined> {
-  try {
-    const email = formData.get('email')
-    const password = formData.get('password')
+  const email = formData.get('email')
+  const password = formData.get('password')
 
+  try {
     const parsedCredentials = z
       .object({
         email: z.string().email(),
@@ -53,6 +58,7 @@ export async function authenticate(
       }
     }
   } catch (error) {
+    console.error('[auth] authenticate failed', { email, error })
     if (error instanceof AuthError) {
       switch (error.type) {
         case 'CredentialsSignin':
@@ -66,6 +72,10 @@ export async function authenticate(
             resultCode: ResultCode.UnknownError
           }
       }
+    }
+    return {
+      type: 'error',
+      resultCode: ResultCode.KVAuthError
     }
   }
 }

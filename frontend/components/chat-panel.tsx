@@ -6,6 +6,7 @@ import { PromptForm } from '@/components/prompt-form'
 import { IconShare } from '@/components/ui/icons'
 import { ChatShareDialog } from '@/components/chat-share-dialog'
 import { useAIState, useUIState } from 'ai/rsc'
+import { AccessInfo } from '@/lib/types'
 
 export interface ChatPanelProps {
 	id?: string
@@ -15,6 +16,7 @@ export interface ChatPanelProps {
 	isAtBottom: boolean
 	scrollToBottom: () => void
 	session?: any
+	accessInfo?: AccessInfo
 }
 
 export function ChatPanel({
@@ -24,7 +26,8 @@ export function ChatPanel({
 	setInput,
 	isAtBottom,
 	scrollToBottom,
-	session
+	session,
+	accessInfo
 }: ChatPanelProps) {
 	const [aiState] = useAIState()
 	const [messages] = useUIState()
@@ -107,6 +110,25 @@ export function ChatPanel({
 				) : null}
 
 				<div className="space-y-4 border-t bg-background px-4 py-2 shadow-lg sm:rounded-t-xl sm:border md:py-4">
+					{accessInfo?.limitsEnabled && !accessInfo?.hasAnthropicKey && (
+						<div className="text-xs text-muted-foreground px-1">
+							Free tier: {accessInfo?.dailyLimit ?? 5} questions/day.{' '}
+							{typeof accessInfo?.dailyCount === 'number' && (
+								<>
+									{Math.max(
+										0,
+										(accessInfo?.dailyLimit ?? 5) - accessInfo.dailyCount
+									)}{' '}
+									left today.
+								</>
+							)}{' '}
+							Add your Anthropic API key in{' '}
+							<a href="/settings" className="underline font-semibold">
+								Settings
+							</a>{' '}
+							to remove limits.
+						</div>
+					)}
 					<PromptForm input={input} setInput={setInput} session={session} />
 				</div>
 			</div>

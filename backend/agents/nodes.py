@@ -1,27 +1,21 @@
 import json
-import random
 from typing import Annotated, Dict, Any, TypedDict, Literal
 
 from langgraph.graph import END, START, StateGraph
-from langgraph.prebuilt import ToolNode
 from langchain_core.messages import AnyMessage, HumanMessage, ToolMessage, AIMessage
-
-# from func.messages import reformat_messages
-# reformat_messages = lambda x: x
 
 from agents.prompts import research_manager_prompt, specialist_prompt_dict
 from agents.utils.agent_state import AgentState
 from agents.utils.messages import _extract_task_from_message, _extract_workflows_from_messages, _format_workflow
 from agents.utils.messages import _remove_xml_tags_from_messages, _extract_xml_tags_from_text
-from langchain_core.load import dumps
 
 from agents.utils.messages import return_messages
 
 
-def call_research_manager(llm_dict, tools, pruning_func, state: AgentState):
+def call_research_manager(load_llm, tools, pruning_func, state: AgentState):
 	profile = {"current": "research_manager", "name": "call_research_manager"}
 	try:
-		llm = llm_dict[state["metadata"]["model_name"]]
+		llm = load_llm(state["metadata"], disable_streaming=False)
 		tools_by_name = {tool.name: tool for tool in tools}
 
 		human_message = HumanMessage(content="""
@@ -35,8 +29,12 @@ def call_research_manager(llm_dict, tools, pruning_func, state: AgentState):
 		])
 
 		tags = ["node_research_manager"]
-		response = llm.bind_tools(list(tools_by_name.values())).invoke(
-			input_messages, config={"tags": tags})
+		response = llm.bind_tools(
+			list(tools_by_name.values()), 
+			tool_choice = { "type": "auto", "disable_parallel_tool_use": True }
+		).invoke(
+			input_messages, config={"tags": tags}
+		)
 		response.tags = tags
 
 		if len(response.tool_calls) == 0:
@@ -52,13 +50,13 @@ def call_research_manager(llm_dict, tools, pruning_func, state: AgentState):
 
 
 from functools import reduce
-def call_specialist(llm_dict, tools, pruning_func, state: AgentState):
+def call_specialist(load_llm, tools, pruning_func, state: AgentState):
 	task = _extract_task_from_message(state["messages"])
 	specialist, task, memory = task["specialist"], task["task"], task["memory"]
 	profile = {"current": specialist, "name": "call_specialist"}
 
 	try:
-		llm = llm_dict[state["metadata"]["model_name"]]
+		llm = load_llm(state["metadata"], disable_streaming=False)
 		
 		workflows = _extract_workflows_from_messages(state["messages"], specialist, newest=False)
 		historical_workflows, newest_workflow = workflows[:-1], workflows[-1]
@@ -71,8 +69,10 @@ def call_specialist(llm_dict, tools, pruning_func, state: AgentState):
 		input_messages = pruning_func([ *system_messages, *historical_messages, *newest_messages ])
 
 		tags = [specialist]
-		response = llm.bind_tools(tools).invoke( input_messages, config={ "tags": tags } )
-		response.content = response.text()
+		response = llm.bind_tools(
+			tools, tool_choice = { "type": "auto", "disable_parallel_tool_use": True }
+		).invoke( input_messages, config={ "tags": tags } )
+		response.content = response.text
 		response.tags = tags
 
 		# If any tool call generated, continue the task (reasoning - tool call iteration)
@@ -86,7 +86,7 @@ def call_specialist(llm_dict, tools, pruning_func, state: AgentState):
 		else:
 			next = "node_evaluation_specialist:task_eval"
 
-			response_str = response.text()
+			response_str = response.text
 			if len(response_str) > 0:
 				response.tool_calls = []
 				response.content = response_str

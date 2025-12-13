@@ -9,7 +9,6 @@ from langchain.tools import BaseTool
 from typing import Any, Dict, Optional, Sequence, Type, Union
 from langchain_community.utilities import SQLDatabase
 from pydantic import BaseModel, Field, ConfigDict
-from langchain_core.tools import BaseTool
 
 from langchain_core.runnables.config import run_in_executor
 
@@ -17,11 +16,10 @@ from langchain_core.tools import InjectedToolArg
 from typing_extensions import Annotated
 
 from func_timeout import func_timeout
-
 from func.gcp import upload_file_to_gcp
 
+bigquery_uri = os.getenv("GOOGLE_BIGQUERY_URI")
 workspace = os.getenv("LOCAL_STORAGE_PATH")
-
 
 class BaseSQLDatabaseTool(BaseModel):
 	db_dict: Dict[str, SQLDatabase] = Field(exclude=True)
@@ -245,5 +243,18 @@ class SQLQueryTool(BaseSQLDatabaseTool, BaseTool):
 	async def _arun(self, query:str):
 		return await run_in_executor(None, self.run, query)
 	
+
+db_name = bigquery_uri.split("/")[-1]
+# Initialize tools
+db_dict = {
+	db_name: SQLDatabase.from_uri(
+		database_uri=bigquery_uri, 
+		sample_rows_in_table_info=0, 
+	)
+}
+
+sql_list_table_tool = SQLListTableTool(db_dict=db_dict)
+sql_get_schema_tool = SQLGetSchemaTool(db_dict=db_dict)
+sql_query_tool = SQLQueryTool(db_dict=db_dict)
 
 

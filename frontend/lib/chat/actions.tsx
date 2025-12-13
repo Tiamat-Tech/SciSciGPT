@@ -1,5 +1,3 @@
-import 'server-only'
-
 export const maxDuration = 300;
 
 import { createAI, createStreamableUI, getMutableAIState, getAIState, createStreamableValue } from 'ai/rsc'
@@ -8,7 +6,7 @@ import { saveChat, appendClientInfo } from '@/app/actions'
 import { Chat } from '@/lib/types'
 import { auth } from '@/auth'
 import { getClientInfo } from '@/lib/utils/client-info'
-import { AIMessage, BaseMessage, HumanMessage, ToolMessage } from "@langchain/core/messages";
+import { BaseMessage, HumanMessage, ToolMessage } from "@langchain/core/messages";
 import { DoneMarker } from '@/components/done-marker'
 
 import { 
@@ -28,21 +26,21 @@ const remoteChain = new RemoteRunnable({
 });
 
 
-async function submitUserMessage(
+export async function submitUserMessage(
 	content: string, 
 	fileList: any[] = [], 
-	selectedModelId: string = 'claude-3.5'
+	selectedModelId: string = 'claude-4.0',
+	userApiKey?: string
 ) {
 	'use server'
 
+	const session = await auth()
 	const aiState = getMutableAIState<typeof AI>()
 	if (aiState.get().title === undefined) {
 		aiState.update({ ...aiState.get(), title: content.substring(0, 100) ?? "Test" })
 	}
 	
-	const model_name = selectedModelId ?? 'claude-3.5'
-	
-	const clientInfo = await getClientInfo()
+	const model_name = selectedModelId ?? 'claude-4.0'
 	
 	const session_id = aiState.get().chatId
 	const db_name = "SciSciNet_US_V4"
@@ -51,7 +49,8 @@ async function submitUserMessage(
 		format: "events",
 		session_id: session_id,
 		db_name: db_name,
-		model_name: model_name
+		model_name: model_name,
+		api_key: userApiKey ?? undefined
 	}
 	
 	const human_message = new HumanMessage({ content: [
@@ -64,6 +63,7 @@ async function submitUserMessage(
 		data: JSON.stringify({ messages: [ human_message.toJSON() ], current: "user_input", next: "node_research_manager" })
 	}
 	
+	const clientInfo = await getClientInfo()
 
 	let textStream: undefined | ReturnType<typeof createStreamableValue<string>>
 	let temp_node: undefined | React.ReactNode
@@ -133,9 +133,7 @@ async function submitUserMessage(
 		try { aiState.done(aiState.get()) } catch (e: any) { console.error(e) }
 		try { if (textStream !== undefined) { textStream.done() } } catch (e: any) { console.error(e) }
 		try {
-			console.log('streaming finished')
 			streamableUI.done(<DoneMarker />)
-			console.log("successfully refresh the page")
 		} catch (e: any) { console.error(e) }
 
 	})()
@@ -147,6 +145,7 @@ async function submitUserMessage(
 		display: streamableUI.value
 	}
 }
+
 
 export type AIState = {
 	chatId: string
@@ -161,9 +160,7 @@ export type UIState = {
 }[]
 
 export const AI = createAI<AIState, UIState>({
-	actions: {
-		submitUserMessage
-	},
+	actions: { submitUserMessage },
 	initialUIState: [],
 	initialAIState: { chatId: nanoid(), messages: [] },
 	onGetUIState: async () => { 
@@ -181,7 +178,7 @@ export const AI = createAI<AIState, UIState>({
 			return undefined
 		}
 	},
-	onSetAIState: async ({ state }) => {
+	onSetAIState: async ({ state }: { state: AIState }) => {
 		'use server'
 
 		const session = await auth()

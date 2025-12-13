@@ -28,7 +28,7 @@ def _remove_xml_tags_from_messages(messages: list[AnyMessage], tags: list[str]):
 		pattern = re.compile(fr'<{tag}>(.*?)</{tag}>', re.DOTALL)
 		for message in messages:
 			if isinstance(message, AIMessage):
-				message.content = pattern.sub("", message.text()).strip()
+				message.content = pattern.sub("", message.text).strip()
 
 	messages = [_format_message(message) for message in messages]
 	return messages

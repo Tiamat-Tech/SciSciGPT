@@ -40,4 +40,23 @@ export interface User extends Record<string, any> {
   email: string
   password: string
   salt: string
+  emailVerified?: boolean | string
+  verificationCode?: string
+  verificationExpiresAt?: number | string
+  resetCode?: string
+  resetCodeExpiresAt?: number | string
+}
+
+export interface AccessInfo {
+  hasAnthropicKey: boolean
+  anthropicKeyLast4?: string
+  anthropicKeyMasked?: string
+  limitsEnabled: boolean
+  dailyLimit: number
+  dailyCount: number
+  emailVerified?: boolean
+}
+
+export interface SettingsSnapshot extends AccessInfo {
+  email: string
 }

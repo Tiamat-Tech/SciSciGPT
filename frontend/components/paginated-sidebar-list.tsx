@@ -125,7 +125,7 @@ export function PaginatedSidebarList({ userId, initialChats, totalCount }: Pagin
             />
             {loading && (
               <div className="flex items-center justify-center py-4">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-900 dark:border-gray-100"></div>
+                <div className="animate-spin rounded-full size-6 border-b-2 border-gray-900 dark:border-gray-100"></div>
               </div>
             )}
             {!hasMore && chats.length > 0 && (

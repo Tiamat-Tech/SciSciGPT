@@ -4,6 +4,7 @@ import { AI } from '@/lib/chat/actions'
 import { auth } from '@/auth'
 import { Session } from '@/lib/types'
 import { getMissingKeys } from '@/app/actions'
+import { getSettingsSnapshotForUser } from '@/app/settings/actions'
 import LoginForm from '@/components/login-form'
 
 export const metadata = {
@@ -51,11 +52,20 @@ export default async function IndexPage() {
   } else {
     const id = nanoid()
     const missingKeys = await getMissingKeys()
+    const accessInfo = await getSettingsSnapshotForUser(
+      session.user.id,
+      session.user.email
+    )
     return (
       <>
         <RedirectScript />
         <AI initialAIState={{ chatId: id, messages: [] }}>
-          <Chat id={id} session={session} missingKeys={missingKeys} />
+          <Chat
+            id={id}
+            session={session}
+            missingKeys={missingKeys}
+            accessInfo={accessInfo}
+          />
         </AI>
       </>
     )

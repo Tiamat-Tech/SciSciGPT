@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { basename, join } from "path";
 import { promises as fs } from "fs";
 

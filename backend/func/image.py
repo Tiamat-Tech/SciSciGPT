@@ -1,6 +1,4 @@
 import base64, os, requests
-from dotenv import load_dotenv
-load_dotenv()
 
 from func.gcp import upload_file_to_gcp
 

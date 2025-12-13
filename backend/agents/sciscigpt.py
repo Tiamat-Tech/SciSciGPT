@@ -4,6 +4,9 @@ from functools import partial
 from agents.nodes import call_research_manager, call_specialist, call_toolset, call_specialistset, AgentState
 from agents.evaluation import call_evaluation
 
+import pickle
+import os
+from datetime import datetime
 
 def select_next(state: AgentState, verbose: bool = False) -> Literal[
 	"node_research_manager", "node_database_specialist", "node_analytics_specialist", "node_literature_specialist", 
@@ -26,15 +29,15 @@ pruning_func = partial(_remove_xml_tags_from_messages, tags=["thinking"])
 identity_func = lambda x: x
 
 
-def define_sciscigpt_graph(llm_dict):
+def define_sciscigpt_graph(load_llm):
 	node_research_manager = partial(
-		call_research_manager, llm_dict, [DS, AS, LS], pruning_func)
+		call_research_manager, load_llm, [DS, AS, LS], pruning_func)
 
 	# Allowing all specialists to see the full workflow
-	node_database_specialist = partial(call_specialist, llm_dict, DS.tools + [ES], identity_func)
-	node_analytics_specialist = partial(call_specialist, llm_dict, AS.tools + [ES], identity_func)
-	node_literature_specialist = partial(call_specialist, llm_dict, LS.tools + [ES], identity_func)
-	node_evaluation_specialist = partial(call_evaluation, llm_dict, [DS, AS, LS], identity_func)
+	node_database_specialist = partial(call_specialist, load_llm, DS.tools + [ES], identity_func)
+	node_analytics_specialist = partial(call_specialist, load_llm, AS.tools + [ES], identity_func)
+	node_literature_specialist = partial(call_specialist, load_llm, LS.tools + [ES], identity_func)
+	node_evaluation_specialist = partial(call_evaluation, load_llm, [DS, AS, LS], identity_func)
 
 	node_specialistset = partial(call_specialistset, [DS, AS, LS])
 	node_toolset = partial(call_toolset, [ *DS.tools, *AS.tools, *LS.tools ])

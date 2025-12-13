@@ -2,8 +2,6 @@ from typing import Any, List, Dict, Any, Optional
 from langchain_core.messages import AnyMessage
 from pydantic import BaseModel
 import httpx, json, os
-from dotenv import load_dotenv
-load_dotenv()
 
 from fastapi import FastAPI
 from langserve import add_routes
@@ -13,33 +11,12 @@ app = FastAPI(
 	description="Spin up a simple api server using LangChain's Runnable interfaces",
 )
 
-# All claude models: https://docs.anthropic.com/en/docs/about-claude/models
-from langchain_google_vertexai.model_garden import ChatAnthropicVertex
-# Initialise the Model
-model_config = {
-	"project": "ksm-rch-sciscigpt",
-	"location": "us-east5",
-	"temperature": 0.0,
-	"streaming": True
-}
-
-llm_dict = {
-	"claude-3.5": ChatAnthropicVertex(
-		model_name="claude-3-5-sonnet-v2@20241022", max_output_tokens=8192, **model_config
-	),
-	"claude-3.7": ChatAnthropicVertex(
-		model_name="claude-3-7-sonnet@20250219", max_output_tokens=8192 * 4, **model_config
-	),
-	"claude-4.0": ChatAnthropicVertex(
-		model_name="claude-sonnet-4@20250514", max_output_tokens=8192 * 4, **model_config
-	)
-}
-
 from agents.sciscigpt import AgentState, all_tools, all_specialists, define_sciscigpt_graph
 for tool in all_tools:
     add_routes(app, tool, path=f"/tools/{tool.name}")
 
-sciscigpt_graph = define_sciscigpt_graph(llm_dict)
+from llms import load_llm
+sciscigpt_graph = define_sciscigpt_graph(load_llm)
 sciscigpt = sciscigpt_graph.compile(debug=False)
 
 class Input(BaseModel):
@@ -70,7 +47,6 @@ add_routes(
 	path="/sciscigpt",
 )
 
-
 if __name__ == "__main__":
-	import uvicorn
-	uvicorn.run(app, host="0.0.0.0", port=8080)
+		import uvicorn
+		uvicorn.run(app, host="0.0.0.0", port=8080)

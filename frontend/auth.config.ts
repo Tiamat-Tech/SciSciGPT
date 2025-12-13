@@ -21,11 +21,15 @@ export const authConfig = {
       return true
     },
     async jwt({ token, user }) {
-      if (user) {
-        token = { ...token, id: user.id }
-      }
+      // Persist a stable user id for both credentials and OAuth providers
+      const derivedId =
+        // id from credentials or provider profile
+        (user as { id?: string } | undefined)?.id ||
+        // fallback to the subject issued by the provider
+        (token as { sub?: string }).sub ||
+        token.id
 
-      return token
+      return { ...token, id: derivedId }
     },
     async session({ session, token }) {
       if (token) {

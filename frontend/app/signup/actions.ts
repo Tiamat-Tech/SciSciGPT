@@ -12,7 +12,19 @@ export async function createUser(
   hashedPassword: string,
   salt: string
 ) {
-  const existingUser = await getUser(email)
+  let existingUser: any = null
+  try {
+    existingUser = await getUser(email)
+  } catch (error) {
+    console.error('[kv] Failed to read existing user during signup', {
+      email,
+      error
+    })
+    return {
+      type: 'error',
+      resultCode: ResultCode.KVAuthError
+    }
+  }
 
   if (existingUser) {
     return {
@@ -24,10 +36,19 @@ export async function createUser(
       id: crypto.randomUUID(),
       email,
       password: hashedPassword,
-      salt
+      salt,
+      emailVerified: false
     }
 
-    await kv.hmset(`user:${email}`, user)
+    try {
+      await kv.hmset(`user:${email}`, user)
+    } catch (error) {
+      console.error('[kv] Failed to write new user', { email, error })
+      return {
+        type: 'error',
+        resultCode: ResultCode.KVAuthError
+      }
+    }
 
     return {
       type: 'success',
@@ -58,8 +79,8 @@ export async function signup(
       password
     })
 
-  if (parsedCredentials.success) {
-    const salt = crypto.randomUUID()
+    if (parsedCredentials.success) {
+      const salt = crypto.randomUUID()
 
     const encoder = new TextEncoder()
     const saltedPassword = encoder.encode(password + salt)
@@ -82,6 +103,7 @@ export async function signup(
 
       return result
     } catch (error) {
+      console.error('[auth] signup failed', { email, error })
       if (error instanceof AuthError) {
         switch (error.type) {
           case 'CredentialsSignin':

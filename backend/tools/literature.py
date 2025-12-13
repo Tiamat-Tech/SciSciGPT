@@ -1,4 +1,4 @@
-from typing import Optional, Type, Literal
+from typing import Optional, Type, Literal, Callable
 from langchain.tools import BaseTool
 from langchain_core.vectorstores import VectorStore
 from pydantic import BaseModel, Field
@@ -6,14 +6,11 @@ from typing import Annotated
 from langgraph.prebuilt import InjectedState
 import pandas as pd
 import re, os
-
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.hub import pull
 HyDE_pre_retrieval_xml = pull("erzhuoshao/sciscigpt_literature_specialist_hyde_pre")
 HyDE_post_retrieval_xml = pull("erzhuoshao/sciscigpt_literature_specialist_hyde_post")
 
-from dotenv import load_dotenv
-load_dotenv()
 sciscicorpus_index = os.getenv("SCISCICORPUS_INDEX")
 sciscicorpus_namespace = os.getenv("SCISCICORPUS_NAMESPACE")
 openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -227,14 +224,14 @@ class SearchLiteratureAdvancedTool(BaseTool):
 	"""
 	args_schema: Type[BaseModel] = SearchLiteratureAdvancedInput
 	vs: VectorStore
-	llm_dict: dict
+	load_llm: Callable
 
 	def _run(
 		self, query: str, k: int, state: Annotated[dict, InjectedState], **kwargs
 		# section: str = None, title: str = None, authors: list = None, 
 		# section_id: int = None, venue: str = None
 	):
-		llm = self.llm_dict[state["metadata"]["model_name"]]
+		llm = self.load_llm(state["metadata"], disable_streaming=True)
 
 		response = {}
 		try:
@@ -266,33 +263,12 @@ class SearchLiteratureAdvancedTool(BaseTool):
 
 from langchain_openai import OpenAIEmbeddings
 from langchain_pinecone import PineconeVectorStore
+from llms import load_llm
+
 vs = PineconeVectorStore.from_existing_index(
 	embedding = OpenAIEmbeddings(model="text-embedding-3-large", api_key=openai_api_key),
 	index_name = sciscicorpus_index,
 	namespace = sciscicorpus_namespace,
 )
 
-
-from langchain_google_vertexai.model_garden import ChatAnthropicVertex
-llm_dict = {
-	"claude-3.5": ChatAnthropicVertex(
-		model_name="claude-3-5-sonnet-v2@20241022", 
-		project="ksm-rch-sciscigpt", 
-		location="us-east5", 
-		temperature=0.0, max_output_tokens=8192, disable_streaming=True
-	),
-	"claude-3.7": ChatAnthropicVertex(
-		model_name="claude-3-7-sonnet@20250219", 
-		project="ksm-rch-sciscigpt", 
-		location="us-east5", 
-		temperature=0.0, max_output_tokens=8192 * 4, disable_streaming=True
-	),
-	"claude-4.0": ChatAnthropicVertex(
-		model_name="claude-sonnet-4@20250514", 
-		project="ksm-rch-sciscigpt", 
-		location="us-east5", 
-		temperature=0.0, max_output_tokens=8192 * 4, disable_streaming=True
-	)
-}
-
-search_literature_advanced_tool = SearchLiteratureAdvancedTool(vs=vs, llm_dict=llm_dict)
+search_literature_advanced_tool = SearchLiteratureAdvancedTool(vs=vs, load_llm=load_llm)

@@ -8,7 +8,7 @@ import remarkMath from 'remark-math'
 import { cn } from '@/lib/utils'
 import { CodeBlock } from '@/components/ui/codeblock'
 import { MemoizedReactMarkdown } from '@/components/markdown'
-import { IconOpenAI, IconAnthropic, IconUser, IconTool } from '@/components/ui/icons'
+import { IconUser, IconTool } from '@/components/ui/icons'
 import { ChatMessageActions } from '@/components/chat-message-actions'
 
 export interface ChatMessageProps {
@@ -17,7 +17,9 @@ export interface ChatMessageProps {
 
 export function ChatMessage({ message, ...props }: ChatMessageProps) {
   console.log(message.role)
-  const icon = <IconAnthropic />
+  const icon =
+    message.role === 'user' ? <IconUser /> : message.role === 'tool' ? <IconTool /> : null
+  const hasIcon = Boolean(icon)
 
   return (
     <div
@@ -29,8 +31,10 @@ export function ChatMessage({ message, ...props }: ChatMessageProps) {
           'flex size-8 shrink-0 select-none items-center justify-center rounded-md border shadow',
           message.role === 'user'
             ? 'bg-background'
-            : 'bg-primary text-primary-foreground'
+            : 'bg-primary text-primary-foreground',
+          !hasIcon && 'invisible'
         )}
+        aria-hidden={!hasIcon}
       >
         {icon}
       </div>

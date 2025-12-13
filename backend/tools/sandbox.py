@@ -10,8 +10,6 @@ from func.image import upload_image
 
 from langgraph.prebuilt import InjectedState
 
-from dotenv import load_dotenv
-load_dotenv()
 working_dir = os.getenv("LOCAL_STORAGE_PATH")
 
 def _parse_jupyter_results(results: list[dict]) -> dict:

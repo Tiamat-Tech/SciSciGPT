@@ -1,5 +1,6 @@
 import * as React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 import { cn } from '@/lib/utils'
 import { auth } from '@/auth'
@@ -65,10 +66,12 @@ export function Header() {
           rel="noopener noreferrer"
           className={cn(buttonVariants({ variant: 'outline' }))}
         >
-          <img
-            src="https://pbs.twimg.com/profile_images/1338633278954332167/CsMu3GNL_400x400.jpg"
-            alt="Northwestern University Logo"
-            className="h-8 w-8"
+          <Image
+            src="/sciscigpt-icon.png"
+            alt="SciSciGPT"
+            width={32}
+            height={32}
+            className="size-8"
           />
           <span className="hidden ml-2 md:flex">Visit CSSI</span>
         </a>
@@ -85,4 +88,3 @@ export function Header() {
     </header>
   )
 }
-

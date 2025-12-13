@@ -227,4 +227,8 @@ export function render_event(event: any) {
 		const content = JSON.parse(messages[0].kwargs.content[0].text)
 		return __render_tool_response__(current, content)
 	}
+
+	if (name === "limit_notice") {
+		return render_ai_message(messages[0].kwargs, "Usage limit")
+	}
 }

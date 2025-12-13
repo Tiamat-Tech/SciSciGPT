@@ -7,19 +7,27 @@ import { EmptyScreen } from '@/components/empty-screen'
 import { useLocalStorage } from '@/lib/hooks/use-local-storage'
 import { useEffect, useState } from 'react'
 import { useUIState, useAIState } from 'ai/rsc'
-import { Message, Session } from '@/lib/types'
+import { AccessInfo, Message, Session } from '@/lib/types'
 import { usePathname, useRouter } from 'next/navigation'
 import { useScrollAnchor } from '@/lib/hooks/use-scroll-anchor'
 import { toast } from 'sonner'
+import { ApiKeyDialog } from './api-key-dialog'
 
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
   id?: string
   session?: Session
   missingKeys: string[]
+  accessInfo?: AccessInfo
 }
 
-export function Chat({ id, className, session, missingKeys }: ChatProps) {
+export function Chat({
+  id,
+  className,
+  session,
+  missingKeys,
+  accessInfo
+}: ChatProps) {
   const router = useRouter()
   const path = usePathname()
   const [input, setInput] = useState('')
@@ -79,7 +87,9 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
         isAtBottom={isAtBottom}
         scrollToBottom={scrollToBottom}
         session={session}
+        accessInfo={accessInfo}
       />
+      <ApiKeyDialog accessInfo={accessInfo} />
     </div>
   )
 }
