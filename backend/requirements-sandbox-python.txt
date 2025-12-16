@@ -96,7 +96,6 @@ shapely
 fiona
 rasterio
 geopy
-basemap
 xyzservices
 
 # Network & Graph Analysis

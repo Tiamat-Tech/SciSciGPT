@@ -4,7 +4,7 @@ conda create -n sciscigpt python=3.11 -y
 conda activate sciscigpt
 
 # install python dependencies
-pip install -r requirements.txt
+python -m pip install --use-deprecated=legacy-resolver -r requirements.txt
 
 # install R using conda forge
 conda install -c conda-forge r-essentials r-base -y

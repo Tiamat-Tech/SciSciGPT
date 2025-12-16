@@ -40,19 +40,19 @@ export function ChatPanel({
 			message: `Generate a network for collaborations among Ivy League Universities between 2000 and 2020. Optimize its colors and annotations.`
 		},
 		{
-			heading: 'AI Trendings',
+			heading: 'AI Trends',
 			subheading: 'Trending research institutions in AI',
-			message: 'Which research institution is trending in AI over time? X = time, Y = # AI publications, Hue = top institutions.'
+			message: 'Which research institutions are trending in AI over time? X = time, Y = # AI publications, Hue = top institutions.'
 		},
 		{
-			heading: 'Valueable Papers',
+			heading: 'Valuable Papers',
 			subheading: 'citation + disruption + novelty',
-			message: `Who publish paper with high citation + high disruption + high novelty?`
+			message: `Who has published papers with the most citations + highest disruption + highest novelty?`
 		},
 		{
 			heading: 'Nanotechnology',
 			subheading: `5 leading research institutions`,
-			message: `List 5 leading research institutions in Nanotechnology, their total citations (for Nanotechnology papers), and representative work.`
+			message: `List the five leading research institutions in nanotechnology, their total citations for nanotechnology papers, and representative publications.`
 		}
 	]
 

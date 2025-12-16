@@ -12,11 +12,11 @@ export function EmptyScreen() {
           <ExternalLink href="https://arxiv.org/abs/2504.05559">SciSciGPT</ExternalLink>
         </h1>
         <p className="leading-normal text-muted-foreground">
-          A prototype AI collaborator for Science of Science research. It uses Anthropic Claude, Google BigQuery, LangChain, and many other tools to provide SciSci assistance for data processing, data analysis, visualization, and literature understanding.
+          A prototype AI collaborator for science of science (SciSci) research. SciSciGPT uses Anthropic Claude, Google BigQuery, LangChain, and other tools to assist researchers in data processing, data analysis, visualization, and literature understanding.
         </p>
         <p className="leading-normal text-muted-foreground">
           SciSciGPT is built upon{' '}
-          <ExternalLink href="https://www.nature.com/articles/s41597-023-02198-9">SciSciNet</ExternalLink>. The current prototype version only includes US domestic data (up to 2021).
+          <ExternalLink href="https://www.nature.com/articles/s41597-023-02198-9">SciSciNet</ExternalLink>. The current prototype only includes US domestic data up to 2021.
         </p>
       </div>
     </div>

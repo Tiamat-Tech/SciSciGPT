@@ -23,9 +23,11 @@ class DatabaseSpecialist(BaseTool):
 	2. Identify and extract relevant data segments
 	3. Clean and transform data through preprocessing steps
 	4. Conduct necessary data statistics and aggregation.
+	5. Provide a literature review for general science literature.
+	Important: This specialist can navigate to the data directly related to general science.
+	Call this agent when the user explicitly asks for general science literature while acknowledging the limited coverage.
 	Invoke this tool to assign a task to `database_specialist`.
 	"""
-
 	args_schema: Type[BaseModel] = SpecialistInput
 	tools: list[BaseTool] = []
 	def _run(self, task: str, memory: bool):
@@ -54,11 +56,13 @@ class AnalyticsSpecialist(BaseTool):
 class LiteratureSpecialist(BaseTool):
 	name: str = "literature_specialist"
 	description: str = """
-	`literature_specialist` is a specialized agent focused on literature understanding Science of Science literature. It helps with:
+	`literature_specialist` is a specialized agent focused on literature understanding literature. It helps with:
 	1. Locating and retrieving relevant papers from the Science of Science literature
 	2. Extracting key methodological approaches and findings from papers
-	3. Highlighting implications and applications of existing Science of Science research
-	Call this agent when the user explicitly asks for the Science of Science literature.
+	3. Highlighting implications and applications of existing research
+	Important: This specialist can only search for literature directly related to "Science of Science" topics.
+	Meanwhile, the coverage of this specialist is limited to partial coverage of the Science of Science literature.
+	Call this agent when the user explicitly asks for Science of Science literature while acknowledging the limited coverage.
 	Invoke this tool to assign a task to `literature_specialist`.
 	"""
 	args_schema: Type[BaseModel] = SpecialistInput
