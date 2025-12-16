@@ -73,7 +73,7 @@ export function Header() {
             height={32}
             className="size-8"
           />
-          <span className="hidden ml-2 md:flex">Visit CSSI</span>
+          <span className="hidden ml-2 md:flex">About CSSI</span>
         </a>
         {/* <a
           href="https://www.kellogg.northwestern.edu/research/science-of-science.aspx"

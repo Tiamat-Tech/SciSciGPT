@@ -12,7 +12,7 @@ export function FooterText({ className, ...props }: React.ComponentProps<'p'>) {
       )}
       {...props}
     >
-      SciSciGPT can make mistakes. Check important info.
+      SciSciGPT can make mistakes. Please verify important information.
     </p>
   )
 }
