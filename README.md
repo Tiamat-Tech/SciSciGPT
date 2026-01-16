@@ -367,10 +367,17 @@ If the DatabaseSpecialist is not functioning properly, verify that **Google BigQ
 If you use *SciSciGPT* in your research, please cite:
 
 ```bibtex
-@article{sciscigpt2025,
-  title={*SciSciGPT*: Advancing Human-AI Collaboration in the Science of Science},
-  author={Erzhuo Shao, Yifang Wang, Yifan Qian, Zhenyu Pan, Han Liu, Dashun Wang},
-  journal={arXiv preprint arXiv:2504.05559},
-  year={2025}
+@article{shao_sciscigpt_2025,
+	title = {{SciSciGPT}: advancing human–{AI} collaboration in the science of science},
+	rights = {2025 The Author(s)},
+	issn = {2662-8457},
+	url = {https://www.nature.com/articles/s43588-025-00906-6},
+	doi = {10.1038/s43588-025-00906-6},
+	pages = {1--15},
+	journaltitle = {Nature Computational Science},
+	publisher = {Nature Publishing Group},
+	author = {Shao, Erzhuo and Wang, Yifang and Qian, Yifan and Pan, Zhenyu and Liu, Han and Wang, Dashun},
+	date = {2025-12-09},
 }
+
 ```
