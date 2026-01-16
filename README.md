@@ -369,7 +369,6 @@ If you use *SciSciGPT* in your research, please cite:
 ```bibtex
 @article{shao_sciscigpt_2025,
 	title = {{SciSciGPT}: advancing human–{AI} collaboration in the science of science},
-	rights = {2025 The Author(s)},
 	issn = {2662-8457},
 	url = {https://www.nature.com/articles/s43588-025-00906-6},
 	doi = {10.1038/s43588-025-00906-6},
@@ -379,5 +378,4 @@ If you use *SciSciGPT* in your research, please cite:
 	author = {Shao, Erzhuo and Wang, Yifang and Qian, Yifan and Pan, Zhenyu and Liu, Han and Wang, Dashun},
 	date = {2025-12-09},
 }
-
 ```
